@@ -1,0 +1,25 @@
+# Render Blueprint (Infrastructure as Code) para o Sandstorm FPS
+# Jogo 100% estático (Three.js + assets embutidos em base64, sem backend).
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: sandstorm-fps
+    runtime: static
+    # Nenhum build é necessário: o jogo é um único HTML autossuficiente.
+    buildCommand: "echo 'Nada para compilar — site estático'"
+    # Publica a raiz do repositório (onde está o sandstorm_fps_v81.html).
+    staticPublishPath: .
+
+    # Mantém a URL limpa ("/") servindo o HTML do jogo diretamente,
+    # sem precisar renomear o arquivo nem usar redirect.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /sandstorm_fps_v81.html
+
+    # HTTPS é automático no Render -> o chat de voz (getUserMedia) funciona.
+    # Cache curto na "home" para que novas versões apareçam sem cache preso.
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: "public, max-age=0, must-revalidate"
