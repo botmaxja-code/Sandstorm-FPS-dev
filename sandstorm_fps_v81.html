@@ -641,6 +641,145 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
  window.addEventListener('resize', function(){ if(running) resize(); });
 })();
 </script>
+<style id="ds-core">
+/* ============================================================
+   SANDSTORM FPS — Design System (foundation only)
+   Namespaced with .ds-* / --ds-* so it NEVER affects existing
+   screens or the HUD. Opt-in: apply these classes when a screen
+   is redesigned. No external fonts/libs. Scoped, landscape-first.
+   ============================================================ */
+:root{
+ --ds-orange:#ff8a1e; --ds-orange-lt:#ffcf6e; --ds-gold:#e8b75b; --ds-gold-lt:#ffbe6b;
+ --ds-ink:#0c1017; --ds-ink2:#0a0f1a; --ds-panel:#141b26; --ds-panel2:#1b2430;
+ --ds-text:#eaf0f2; --ds-muted:#a3b4bf; --ds-dim:#8291a0;
+ --ds-line:#ffffff1c; --ds-line-hi:#ffb86255;
+ --ds-grad:linear-gradient(135deg,var(--ds-orange-lt),var(--ds-orange));
+ --ds-grad-soft:linear-gradient(145deg,#141b26e0,#0c1017f2);
+ --ds-blue:#7fb0ff; --ds-red:#ff6b5a; --ds-green:#56e08a;
+ --ds-radius:14px; --ds-radius-sm:10px;
+ --ds-shadow:0 10px 30px #0008; --ds-glow:0 8px 26px #ff8a1e66;
+ --ds-cut:14px; /* corte angular dos botões */
+ --ds-ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* ---------- layout de tela ---------- */
+.ds-screen{position:absolute;inset:0;display:flex;flex-direction:column;box-sizing:border-box;
+ color:var(--ds-text);font-family:system-ui,"Segoe UI",Arial,sans-serif;
+ background:
+  linear-gradient(180deg,#05070cd8 0%,transparent 16%,transparent 72%,#05060bf0 100%),
+  radial-gradient(ellipse at 78% 12%,#ff8a1e18,transparent 55%),
+  linear-gradient(160deg,#0a0a16,#0d0c18 45%,#140a12);
+ overflow:hidden}
+.ds-screen *{box-sizing:border-box}
+
+/* ---------- cabeçalho ---------- */
+.ds-head{display:flex;align-items:center;gap:14px;padding:16px 20px;
+ background:linear-gradient(180deg,#000000a8,transparent);border-bottom:1px solid var(--ds-line);flex:0 0 auto}
+.ds-head__titles{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ds-head__actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+.ds-kicker{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ds-gold-lt);font-weight:800}
+.ds-title{font-size:clamp(20px,2.6vw,30px);font-weight:900;letter-spacing:.01em;line-height:1;margin:0;
+ text-shadow:0 3px 14px #0008}
+.ds-title .o{color:var(--ds-orange)}
+.ds-sub{font-size:13px;color:var(--ds-muted);font-weight:500;line-height:1.45;margin:0}
+
+/* botão Voltar (angular, com seta SVG) */
+.ds-back{display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 18px 0 14px;cursor:pointer;
+ border:1px solid var(--ds-line);background:#0e1420cc;color:var(--ds-text);font:800 13px system-ui;letter-spacing:.03em;
+ clip-path:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:.18s var(--ds-ease)}
+.ds-back::before{content:"";width:16px;height:16px;flex:0 0 auto;background:currentColor;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 5l-7 7 7 7' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 5l-7 7 7 7' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.ds-back:hover{border-color:var(--ds-line-hi);background:#18202ecc;color:#fff;transform:translateX(-1px)}
+.ds-back:active{transform:translateX(-1px) scale(.98)}
+
+/* ---------- corpo / rodapé ---------- */
+.ds-body{flex:1 1 auto;min-height:0;overflow:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.ds-foot{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:12px 20px;
+ background:linear-gradient(0deg,#05060bf2,transparent);border-top:1px solid var(--ds-line)}
+.ds-foot__end{margin-left:auto;display:flex;align-items:center;gap:10px}
+
+/* ---------- botões ---------- */
+.ds-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;
+ min-height:46px;padding:0 20px;cursor:pointer;border:1px solid var(--ds-line);
+ background:#121a26cc;color:var(--ds-text);font:800 14px system-ui;letter-spacing:.03em;
+ clip-path:polygon(var(--ds-cut) 0,100% 0,calc(100% - var(--ds-cut)) 100%,0 100%);
+ transition:transform .16s var(--ds-ease),filter .16s var(--ds-ease),background .16s var(--ds-ease),border-color .16s var(--ds-ease)}
+.ds-btn:hover{background:#1a2432cc;border-color:var(--ds-line-hi);color:#fff}
+.ds-btn:active{transform:scale(.975)}
+.ds-btn:focus-visible{outline:none;box-shadow:0 0 0 2px #05060b,0 0 0 4px var(--ds-orange)}
+.ds-btn:disabled,.ds-btn[disabled]{opacity:.45;cursor:default;filter:grayscale(.3);pointer-events:none}
+.ds-btn--primary{border:none;color:#20140a;font-weight:900;background:var(--ds-grad);box-shadow:var(--ds-glow),inset 0 1px 0 #fff6}
+.ds-btn--primary:hover{filter:brightness(1.07);color:#1a0f08}
+.ds-btn--ghost{background:transparent;border-color:var(--ds-line)}
+.ds-btn--danger{color:#ffd9d2;border-color:#ff6b5a55;background:#2a1414cc}
+.ds-btn--danger:hover{border-color:#ff6b5a99;background:#351818cc;color:#fff}
+.ds-btn--lg{min-height:56px;padding:0 30px;font-size:19px}
+.ds-btn--block{width:100%}
+.ds-btn__ico{width:18px;height:18px;flex:0 0 auto}
+
+/* ---------- cards ---------- */
+.ds-card{position:relative;border:1px solid var(--ds-line);border-radius:var(--ds-radius);
+ background:var(--ds-grad-soft);box-shadow:var(--ds-shadow);padding:16px 18px;overflow:hidden;
+ transition:border-color .18s var(--ds-ease),transform .18s var(--ds-ease)}
+.ds-card:hover{border-color:var(--ds-line-hi)}
+.ds-card__accent{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ds-grad)}
+
+/* card de seleção (modo, time, arma) — imagem + rótulo + estado iluminado */
+.ds-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ds-pick{position:relative;display:flex;flex-direction:column;gap:6px;cursor:pointer;text-align:left;
+ min-height:118px;padding:14px;border:1px solid var(--ds-line);color:var(--ds-text);
+ background:linear-gradient(150deg,#1a2330e6,#0c1119f4);border-radius:var(--ds-radius);overflow:hidden;
+ transition:transform .18s var(--ds-ease),border-color .18s var(--ds-ease),box-shadow .18s var(--ds-ease)}
+.ds-pick::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 60%,#ff8a1e14);opacity:0;transition:opacity .2s}
+.ds-pick:hover{transform:translateY(-2px);border-color:var(--ds-line-hi)}
+.ds-pick:hover::after{opacity:1}
+.ds-pick__img{height:40px;object-fit:contain;object-position:left center;filter:drop-shadow(0 2px 3px #000a);pointer-events:none}
+.ds-pick__name{font-weight:900;font-size:15px;letter-spacing:.02em}
+.ds-pick__desc{font-size:11px;color:var(--ds-muted);font-weight:500;line-height:1.4}
+.ds-pick.is-on{border-color:var(--ds-orange);background:linear-gradient(150deg,#3a2510e8,#160d06f6);
+ box-shadow:0 0 0 1px var(--ds-orange),0 10px 26px #ff8a1e40}
+.ds-pick.is-on::before{content:"";position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;
+ background:var(--ds-grad) center/14px no-repeat,
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 13l4 4L19 7' fill='none' stroke='%2320140a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat;
+ box-shadow:0 2px 8px #ff8a1e88}
+
+/* ---------- campos de formulário ---------- */
+.ds-field{width:100%;min-height:46px;padding:11px 14px;border:1px solid #566575;border-radius:var(--ds-radius-sm);
+ background:#0a131f;color:#fff;font:600 15px system-ui;transition:border-color .16s var(--ds-ease),box-shadow .16s var(--ds-ease)}
+.ds-field::placeholder{color:#7d8c99}
+.ds-field:focus{outline:none;border-color:var(--ds-orange);box-shadow:0 0 0 3px #ff8a1e2e}
+.ds-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ds-muted);font-weight:800;margin-bottom:6px;display:block}
+
+/* ---------- tags / chips de informação ---------- */
+.ds-tag{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:9px;
+ background:#0a0f1ac0;border:1px solid var(--ds-line);font-size:12px;font-weight:700;color:var(--ds-text)}
+.ds-tag__dot{width:8px;height:8px;border-radius:50%;background:var(--ds-green)}
+.ds-tag--gold{border-color:#e8b75b55;color:var(--ds-gold-lt)}
+.ds-tag--gold .ds-tag__dot{background:var(--ds-gold-lt)}
+
+/* ---------- utilitários ---------- */
+.ds-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ds-stat{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:var(--ds-radius-sm);
+ background:#0c1220c0;border:1px solid var(--ds-line);min-width:96px}
+.ds-stat b{font-size:22px;font-weight:900;color:#fff;line-height:1}
+.ds-stat span{font-size:11px;color:var(--ds-muted);font-weight:600}
+
+/* ---------- responsividade (landscape-first) ---------- */
+@media (max-width:900px){
+ .ds-head{padding:12px 14px}
+ .ds-body{padding:14px}
+ .ds-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+ .ds-title{font-size:20px}
+}
+@media (max-height:460px){
+ .ds-head{padding:8px 14px}
+ .ds-body{padding:10px 14px;gap:10px}
+ .ds-pick{min-height:96px}
+}
+
+</style>
 <div id="v24-toast" role="status"></div>
 
 </div>
