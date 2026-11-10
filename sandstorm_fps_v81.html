@@ -467,7 +467,89 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <li><b>M1A1 Abrams:</b> Muhamad Mirza Arrafi <small>(CC BY 4.0)</small></li>
 <li><b>T-55AM2:</b> 42manako <small>(CC BY-NC 4.0; uso não comercial)</small></li>
 </ul><p class="v24-muted" style="font-size:11px">Modelos sem indicação própria: CC BY 4.0. Alguns modelos foram adaptados (normalização e articulação da torre dos tanques).</p><div class="v24-actions"><button class="v24-btn primary" data-home>Voltar</button></div></div></section>
-<section id="v24-modes" class="v24-screen"><div class="v24-card"><div class="v24-kicker">Selecione a operação</div><h2>Modos de jogo</h2><div class="v24-grid"><button id="pvp59" class="v24-btn v24-mode"><strong>Online P2P</strong><small>Partida rápida, sala com código ou entrar em sala.<br>Conquest ou Battle com bots completando as equipes.<br>Jipes, caminhões e tanques · host migration automático.</small></button><button id="v24-conquest" class="v24-btn v24-mode"><strong>Conquest</strong><small>Domine os pontos A–N.<br>Cada ponto dominado: +10 a cada 3 s.<br>Vence a equipe que chegar a 2.000 pontos.</small></button><button id="v24-battle" class="v24-btn v24-mode"><strong>Battle</strong><small>Combate entre equipes com renascimento.<br>Cada eliminação: +1 para a equipe.<br>Vence a equipe que chegar a 50 abates.</small></button></div><div class="v24-muted" id="v24-new-warning"></div><button class="v24-btn" data-home>Voltar</button></div></section>
+<style id="modes-skin">
+#v24-modes .ds-body{padding-bottom:12px}
+#v24-modes .modes-cards{display:flex;gap:14px;flex:1 1 auto;min-height:0}
+#v24-modes .mode-card{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+ padding:18px;border:1px solid var(--ds-line);border-radius:16px;overflow:hidden;cursor:pointer;color:#fff;
+ text-align:left;font-family:inherit;background:#0c1017 center/cover no-repeat;
+ transition:transform .2s var(--ds-ease),border-color .2s var(--ds-ease),box-shadow .2s var(--ds-ease)}
+#v24-modes .mc-online{background-image:url('assets/hero.webp');background-position:62% 30%;--accent:#7fb0ff}
+#v24-modes .mc-conquest{background-image:url('assets/lobby-bg.webp');background-position:30% 55%;--accent:#ffbe6b}
+#v24-modes .mc-battle{background-image:url('assets/hero.webp');background-position:74% 42%;--accent:#ff6b5a}
+#v24-modes .mode-card::before{content:"";position:absolute;inset:0;
+ background:linear-gradient(180deg,#05060b4d 0%,transparent 34%,#05060bd6 74%,#05060bf4 100%)}
+#v24-modes .mc-battle::before{background:linear-gradient(180deg,#2a06064d 0%,transparent 28%,#160404e0 72%,#0e0202f6 100%),radial-gradient(ellipse at 70% 90%,#ff2d0026,transparent 60%)}
+#v24-modes .mc-online::before{background:linear-gradient(180deg,#05060b4d 0%,transparent 34%,#05060bd6 74%,#05070ef4 100%),radial-gradient(ellipse at 50% 92%,#2d6bff1f,transparent 60%)}
+#v24-modes .mode-card>*{position:relative;z-index:1}
+#v24-modes .mode-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 44px #000b,0 0 0 1px var(--accent),0 0 34px -8px var(--accent)}
+#v24-modes .mode-card:active{transform:translateY(-1px) scale(.994)}
+#v24-modes .mode-card:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px #05060b,0 0 0 4px var(--accent)}
+#v24-modes .mc-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#v24-modes .mc-ico{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;color:var(--accent);
+ background:#05060baa;border:1px solid var(--accent);box-shadow:0 4px 16px #0007}
+#v24-modes .mc-ico svg{width:26px;height:26px}
+#v24-modes .mc-chip{font-size:10px;font-weight:800;letter-spacing:.16em;padding:5px 10px;border-radius:20px;
+ background:#05060baa;border:1px solid var(--accent);color:var(--accent);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+#v24-modes .mc-chip i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);font-style:normal}
+#v24-modes .mc-info{margin-top:auto}
+#v24-modes .mc-name{font-size:clamp(22px,3vw,34px);font-weight:900;line-height:1;letter-spacing:.01em;text-shadow:0 3px 14px #000c}
+#v24-modes .mc-name span{color:var(--accent)}
+#v24-modes .mc-bar{width:46px;height:4px;border-radius:3px;background:var(--accent);margin:10px 0 9px;box-shadow:0 0 12px var(--accent)}
+#v24-modes .mc-desc{font-size:13px;color:#dbe4ea;font-weight:500;line-height:1.42;max-width:94%;text-shadow:0 1px 4px #000}
+#v24-modes .mc-go{margin-top:12px;display:inline-flex;align-items:center;gap:7px;align-self:flex-start;
+ font-size:12px;font-weight:900;letter-spacing:.1em;color:#20140a;padding:9px 15px;border-radius:9px;
+ background:var(--accent);clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+ opacity:.92;transform:translateY(2px);transition:.2s var(--ds-ease)}
+#v24-modes .mode-card:hover .mc-go{opacity:1;transform:translateY(0)}
+#v24-modes .modes-note{text-align:center;color:var(--ds-gold-lt);font-size:12.5px;font-weight:700;margin-top:12px;min-height:0;text-shadow:0 1px 4px #000}
+#v24-modes .modes-note:empty{display:none}
+@media (max-height:470px){
+ #v24-modes .mode-card{padding:13px}
+ #v24-modes .mc-ico{width:40px;height:40px}#v24-modes .mc-ico svg{width:22px;height:22px}
+ #v24-modes .mc-name{font-size:clamp(18px,2.6vw,26px)}
+ #v24-modes .mc-desc{font-size:12px}
+ #v24-modes .mc-go{margin-top:8px;padding:7px 12px}
+}
+@media (max-width:760px){
+ #v24-modes .modes-cards{gap:9px}
+ #v24-modes .mode-card{padding:12px}
+ #v24-modes .mc-desc{display:none}
+}
+</style>
+<section id="v24-modes" class="v24-screen">
+<div class="ds-screen">
+<div class="ds-head">
+<button class="ds-back" data-home>Voltar</button>
+<div class="ds-head__titles">
+<div class="ds-kicker">Selecione a operação</div>
+<h2 class="ds-title">ESCOLHA SEU <span class="o">MODO</span></h2>
+<p class="ds-sub">Selecione sua próxima operação</p>
+</div>
+<div class="ds-head__actions"><span class="ds-tag ds-tag--gold"><span class="ds-tag__dot"></span>Temporada 08</span></div>
+</div>
+<div class="ds-body">
+<div class="modes-cards">
+<button id="pvp59" class="mode-card mc-online v24-mode" type="button">
+<div class="mc-top"><span class="mc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a14 14 0 0 1 20 0"/><path d="M5 12.2a9 9 0 0 1 14 0"/><path d="M8 15.6a4.5 4.5 0 0 1 8 0"/><circle cx="12" cy="19" r="1.2" fill="currentColor" stroke="none"/></svg></span><span class="mc-chip"><i></i>AO VIVO</span></div>
+<div class="mc-info"><div class="mc-name">ONLINE <span>P2P</span></div><div class="mc-bar"></div>
+<div class="mc-desc">Partida rápida ou sala com código. Bots completam as equipes · migração de anfitrião automática.</div>
+<span class="mc-go">ENTRAR ›</span></div></button>
+<button id="v24-conquest" class="mode-card mc-conquest v24-mode" type="button">
+<div class="mc-top"><span class="mc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5l9 2-2 3.5 5 1-3 2.5 3 2.5-12-2.6"/></svg></span><span class="mc-chip">TERRITÓRIO</span></div>
+<div class="mc-info"><div class="mc-name">CON<span>QUEST</span></div><div class="mc-bar"></div>
+<div class="mc-desc">Domine os pontos do mapa com veículos e equipes. Primeiro a 2.000 pontos vence.</div>
+<span class="mc-go">JOGAR ›</span></div></button>
+<button id="v24-battle" class="mode-card mc-battle v24-mode" type="button">
+<div class="mc-top"><span class="mc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8"/><path d="M21 3l-8 8"/><path d="M13.5 13.5L21 21"/><path d="M10.5 13.5L3 21"/><path d="M11 13l2 2"/></svg></span><span class="mc-chip">INTENSO</span></div>
+<div class="mc-info"><div class="mc-name">BAT<span>TLE</span></div><div class="mc-bar"></div>
+<div class="mc-desc">Combate direto com renascimento. Primeiro a atingir a meta de abates vence.</div>
+<span class="mc-go">JOGAR ›</span></div></button>
+</div>
+<div class="modes-note" id="v24-new-warning"></div>
+</div>
+</div>
+</section>
 <style>.v24-pick{min-height:0;padding:10px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}.v24-pick img{max-width:100%;max-height:34px;filter:drop-shadow(0 1px 2px #000);pointer-events:none}.v24-pick small{font-weight:500;opacity:.8}.v24-pick.on{background:#e8b75b;border-color:#e8b75b;color:#17202a}#v24-lo-grid{grid-template-columns:repeat(4,1fr)}@media(max-width:560px){#v24-lo-grid{grid-template-columns:repeat(2,1fr)}}</style>
 <section id="v24-team" class="v24-screen"><div class="v24-card"><div class="v24-kicker">Selecione o lado</div><h2>Escolha seu time</h2><div class="v24-grid"><button id="v24-team-ins" class="v24-btn v24-mode"><strong style="color:#ff7d70">Dravóvia do Sul</strong><small>Base ao norte.<br>Fuzis AK: AK-74, AK-12, AKS-47, AKS-74U e sniper SVD.<br>Monte seu loadout: 2 fuzis + pistola.</small></button><button id="v24-team-us" class="v24-btn v24-mode"><strong style="color:#74b9ff">Dravóvia do Norte</strong><small>Base ao sul.<br>M16, M4, AR-15, APC9 e sniper MK22.<br>Monte seu loadout: 2 armas + pistola.</small></button></div><button class="v24-btn" id="v24-team-back">Voltar</button></div></section>
 <section id="v24-loadout" class="v24-screen"><div class="v24-card"><div class="v24-kicker" id="v24-lo-team"></div><h2>Loadout</h2><p class="v24-muted">Escolha 2 armas principais. Pistola: P9.</p><div class="v24-grid" id="v24-lo-grid"></div><div class="v24-actions"><button id="v24-lo-go" class="v24-btn primary" disabled>Iniciar</button><button id="v24-lo-back" class="v24-btn">Voltar</button></div></div></section>
